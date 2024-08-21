@@ -6,6 +6,10 @@ TagManager:
   tags:
   - Background
   - Ground
+  - Bonus
+  - Coin
+  - Attack
+  - Enemy
   layers:
   - Default
   - TransparentFX
