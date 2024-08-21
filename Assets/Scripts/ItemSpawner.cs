@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ScrewSpawner : MonoBehaviour
 {
-    public enum ObjectType { Rock, Grass, Net, Attack } // 오브젝트 타입을 구분하기 위한 enum
+    public enum ObjectType { Rock, Grass, Net, Attack, E, C, O, R, U, N } // 오브젝트 타입을 구분하기 위한 enum
 
     [System.Serializable]
     public class ObjectInfo
@@ -17,6 +17,13 @@ public class ScrewSpawner : MonoBehaviour
     public GameObject grassPrefab;
     public GameObject netPrefab;
     public GameObject attackPrefab;
+
+    public GameObject EPrefab;
+    public GameObject CPrefab;
+    public GameObject OPrefab;
+    public GameObject RPrefab;
+    public GameObject UPrefab;
+    public GameObject NPrefab;
 
     // 생성 간격을 2초로 고정
     public float timeBetSpawn = 2f;
@@ -68,6 +75,24 @@ public class ScrewSpawner : MonoBehaviour
                 break;
             case ObjectType.Attack:
                 prefabToSpawn = attackPrefab;
+                break;
+            case ObjectType.E:
+                prefabToSpawn = EPrefab;
+                break;
+            case ObjectType.C:
+                prefabToSpawn = CPrefab;
+                break;
+            case ObjectType.O:
+                prefabToSpawn = OPrefab;
+                break;
+            case ObjectType.R:
+                prefabToSpawn = RPrefab;
+                break;
+            case ObjectType.U:
+                prefabToSpawn = UPrefab;
+                break;
+            case ObjectType.N:
+                prefabToSpawn = NPrefab;
                 break;
         }
 
