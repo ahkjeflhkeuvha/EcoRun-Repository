@@ -1,23 +1,17 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
-using UnityEngine.UI; // UI 관련 네임스페이스 추가
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private Rigidbody2D rigid;
-    [SerializeField] private Button jumpButton; // 점프 버튼을 위한 변수 추가
+    [SerializeField] private Button jumpButton;
 
-    public float jumpPower = 5f; // 점프 힘
+    public float jumpPower = 5f;
     public bool isJumping = false;
-    public float slideDuration = 1f; // 슬라이드 시간
 
-    public Sprite jumpSprite; // 점프할 때 사용할 스프라이트
-    public Sprite slideSprite; // 슬라이드할 때 사용할 스프라이트
-    public Sprite defaultSprite; // 기본 스프라이트
-
-    // public HeartManager heartManager;
-    // public int heartIndex = 0;
+    public Image[] EcoRunObjects; // UI Image 배열
+    public Sprite[] FilledEcoRun; // 채워진 스프라이트 배열
 
     private void Awake()
     {
@@ -26,32 +20,28 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
-        // 점프 버튼에 onClick 이벤트 연결
         jumpButton.onClick.AddListener(Jump);
+        Debug.Log(EcoRunObjects.Length);
     }
 
     public void Jump()
     {
         if (!isJumping)
         {
-            Debug.Log("jump");
+            Debug.Log("Jump");
             isJumping = true;
             rigid.AddForce(Vector2.up * jumpPower, ForceMode2D.Impulse);
-            Debug.Log("jumping " + isJumping);
+            Debug.Log("Jumping " + isJumping);
         }
     }
 
     private void OnCollisionEnter2D(Collision2D other)
     {
-        Debug.Log(other.gameObject);
-        // 바닥에 닿았을 때 isJumping을 false로 설정
         if (other.gameObject.CompareTag("Ground"))
         {
             isJumping = false;
-            Debug.Log("Landed");
         }
-        
-        if (other.gameObject.CompareTag("Coin"))
+        else if (other.gameObject.CompareTag("Coin"))
         {
             Debug.Log("Coin");
             Destroy(other.gameObject); // 코인 제거
@@ -61,27 +51,40 @@ public class PlayerController : MonoBehaviour
             Debug.Log("Enemy");
             Destroy(other.gameObject);
         }
-    }
+        else if (other.gameObject.CompareTag("Bonus"))
+        {
+            Debug.Log("Collided with: " + other.gameObject.name);
 
+            // 객체 이름에서 "(Clone)"을 제거하고 비교합니다.
+            string itemName = other.gameObject.name.Replace("(Clone)", "");
+            Debug.Log(itemName);
+
+            switch (itemName)
+            {
+                case "E":
+                    EcoRunObjects[0].sprite = FilledEcoRun[0];
+                    break;
+                case "C":
+                    EcoRunObjects[1].sprite = FilledEcoRun[1];
+                    break;
+                case "O":
+                    EcoRunObjects[2].sprite = FilledEcoRun[2];
+                    break;
+                case "R":
+                    EcoRunObjects[3].sprite = FilledEcoRun[3];
+                    break;
+                case "U":
+                    EcoRunObjects[4].sprite = FilledEcoRun[4];
+                    break;
+                case "N":
+                    EcoRunObjects[5].sprite = FilledEcoRun[5];
+                    break;
+                default:
+                    Debug.LogWarning("Unhandled item: " + itemName);
+                    break;
+            }
+
+            Destroy(other.gameObject);
+        }
+    }
 }
-
-/*public void Slide()
-{
-    Debug.Log("sliding");
-    isSliding = true;
-    spriteRenderer.sprite = slideSprite; // 슬라이드 스프라이트로 변경
-
-    // 슬라이드가 끝나면 기본 스프라이트로 되돌리는 Coroutine 시작
-    if (resetSpriteCoroutine != null)
-    {
-        StopCoroutine(resetSpriteCoroutine);
-    }
-    resetSpriteCoroutine = StartCoroutine(ResetSpriteAfterDelay(slideDuration));
-}*/
-
-/*IEnumerator ResetSpriteAfterDelay(float delay)
-{
-    yield return new WaitForSeconds(delay);
-    spriteRenderer.sprite = defaultSprite;
-    isSliding = false; // 슬라이드 상태 종료
-}*/
