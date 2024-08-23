@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,18 +11,41 @@ public class PlayerController : MonoBehaviour
     public float jumpPower = 5f;
     public bool isJumping = false;
 
-    public Image[] EcoRunObjects; // UI Image 배열
-    public Sprite[] FilledEcoRun; // 채워진 스프라이트 배열
+    public Image[] ecoRunImages; // UI Image 배열
+    public Sprite[] filledSprites; // 채워진 스프라이트 배열
+
+    private Dictionary<string, Image> ecoRunDict = new Dictionary<string, Image>();
+    private Dictionary<string, Sprite> filledSpriteDict = new Dictionary<string, Sprite>();
 
     private void Awake()
     {
         rigid = GetComponent<Rigidbody2D>();
+
+        // Dictionary 초기화
+        InitializeDictionaries();
     }
 
     private void Start()
     {
         jumpButton.onClick.AddListener(Jump);
-        Debug.Log(EcoRunObjects.Length);
+    }
+
+    private void InitializeDictionaries()
+    {
+        // 이미지와 스프라이트 배열의 길이가 일치하는지 확인
+        if (ecoRunImages.Length != filledSprites.Length)
+        {
+            Debug.LogError("ecoRunImages and filledSprites arrays must be of the same length.");
+            return;
+        }
+
+        // Dictionary에 데이터 추가
+        for (int i = 0; i < ecoRunImages.Length; i++)
+        {
+            string key = ecoRunImages[i].name; // 이미지 이름을 키로 사용
+            ecoRunDict[key] = ecoRunImages[i];
+            filledSpriteDict[key] = filledSprites[i];
+        }
     }
 
     public void Jump()
@@ -31,7 +55,6 @@ public class PlayerController : MonoBehaviour
             Debug.Log("Jump");
             isJumping = true;
             rigid.AddForce(Vector2.up * jumpPower, ForceMode2D.Impulse);
-            Debug.Log("Jumping " + isJumping);
         }
     }
 
@@ -44,7 +67,7 @@ public class PlayerController : MonoBehaviour
         else if (other.gameObject.CompareTag("Coin"))
         {
             Debug.Log("Coin");
-            Destroy(other.gameObject); // 코인 제거
+            Destroy(other.gameObject);
         }
         else if (other.gameObject.CompareTag("Enemy") || other.gameObject.CompareTag("Attack"))
         {
@@ -55,33 +78,17 @@ public class PlayerController : MonoBehaviour
         {
             Debug.Log("Collided with: " + other.gameObject.name);
 
-            // 객체 이름에서 "(Clone)"을 제거하고 비교합니다.
+            // 객체 이름에서 "(Clone)"을 제거
             string itemName = other.gameObject.name.Replace("(Clone)", "");
             Debug.Log(itemName);
 
-            switch (itemName)
+            if (ecoRunDict.ContainsKey(itemName) && filledSpriteDict.ContainsKey(itemName))
             {
-                case "E":
-                    EcoRunObjects[0].sprite = FilledEcoRun[0];
-                    break;
-                case "C":
-                    EcoRunObjects[1].sprite = FilledEcoRun[1];
-                    break;
-                case "O":
-                    EcoRunObjects[2].sprite = FilledEcoRun[2];
-                    break;
-                case "R":
-                    EcoRunObjects[3].sprite = FilledEcoRun[3];
-                    break;
-                case "U":
-                    EcoRunObjects[4].sprite = FilledEcoRun[4];
-                    break;
-                case "N":
-                    EcoRunObjects[5].sprite = FilledEcoRun[5];
-                    break;
-                default:
-                    Debug.LogWarning("Unhandled item: " + itemName);
-                    break;
+                ecoRunDict[itemName].sprite = filledSpriteDict[itemName];
+            }
+            else
+            {
+                Debug.LogWarning("Unhandled item: " + itemName);
             }
 
             Destroy(other.gameObject);

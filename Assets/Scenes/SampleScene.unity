@@ -1233,18 +1233,14 @@ MonoBehaviour:
   jumpButton: {fileID: 546715342}
   jumpPower: 8
   isJumping: 0
-  slideDuration: 1
-  jumpSprite: {fileID: 0}
-  slideSprite: {fileID: 0}
-  defaultSprite: {fileID: 0}
-  EcoRunObjects:
-  - {fileID: 66892494}
-  - {fileID: 1168076464}
-  - {fileID: 181508222}
-  - {fileID: 1833555139}
-  - {fileID: 111673772}
-  - {fileID: 1555199602}
-  FilledEcoRun:
+  ecoRunImages:
+  - {fileID: 66892496}
+  - {fileID: 1168076466}
+  - {fileID: 181508224}
+  - {fileID: 1833555141}
+  - {fileID: 111673774}
+  - {fileID: 1555199604}
+  filledSprites:
   - {fileID: 21300000, guid: a923b568c25d9a045b8060286889ef55, type: 3}
   - {fileID: 21300000, guid: cbc371d175569c541a727a441c18ba11, type: 3}
   - {fileID: 21300000, guid: e1ddd9a7ecb48dc41a87f08a68f6b11d, type: 3}
