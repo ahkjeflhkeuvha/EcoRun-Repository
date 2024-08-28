@@ -37,6 +37,13 @@ public class PlayerController : MonoBehaviour
     public Sprite BigEmptyStar;
     public Sprite SmallEmptyStar;
 
+    public Button pauseButton;
+    public Sprite stopSprite;
+    public Sprite playSprite;
+    public GameObject pausePanel;
+
+    private bool isPaused = false;
+
     private void Awake()
     {
         rigid = GetComponent<Rigidbody2D>();
@@ -49,6 +56,29 @@ public class PlayerController : MonoBehaviour
     {
         index = 0;
         jumpButton.onClick.AddListener(Jump);
+
+        if (pauseButton != null)
+        {
+            pauseButton.onClick.AddListener(TogglePause);
+        }
+        else
+        {
+            Debug.LogError("Pause button is not assigned!");
+        }
+
+        if (pausePanel != null)
+        {
+            pausePanel.SetActive(false); // 초기에는 패널을 숨김
+        }
+        else
+        {
+            Debug.LogError("Pause panel is not assigned!");
+        }
+    }
+
+    private void Update()
+    {
+        scoreText.text = string.Format("{0:D} M", scoreCount);
     }
 
     private void InitializeDictionaries()
@@ -147,5 +177,51 @@ public class PlayerController : MonoBehaviour
         }
 
         Time.timeScale = 0f; // 게임 일시정지
+    }
+
+    public void TogglePause()
+    {
+        isPaused = !isPaused;
+
+        if (isPaused)
+        {
+            PauseGame();
+        }
+        else
+        {
+            ResumeGame();
+        }
+    }
+
+    private void PauseGame()
+    {
+        if (pauseButton != null)
+        {
+            pauseButton.GetComponent<Image>().sprite = playSprite;
+        }
+
+        if (pausePanel != null)
+        {
+            pausePanel.SetActive(true);
+        }
+
+        Time.timeScale = 0f; // 게임 일시정지
+        Debug.Log("Game Paused");
+    }
+
+    private void ResumeGame()
+    {
+        if (pauseButton != null)
+        {
+            pauseButton.GetComponent<Image>().sprite = stopSprite;
+        }
+
+        if (pausePanel != null)
+        {
+            pausePanel.SetActive(false);
+        }
+
+        Time.timeScale = 1f; // 게임 재개
+        Debug.Log("Game Resumed");
     }
 }
