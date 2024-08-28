@@ -9,11 +9,6 @@ public class HeartManager : MonoBehaviour
     public GameObject[] heartObjects;
     public Sprite emptyHeart;
 
-    void Start()
-    {
-        heartObjects = GameObject.FindGameObjectsWithTag("Heart");
-    }
-
     public void DestroyHeart(int index)
     {
         Debug.Log("destroy");

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Net.Security;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -25,6 +26,16 @@ public class PlayerController : MonoBehaviour
     public Sprite attackButtonImg;
     public Sprite jumpButtonImg;
     public Sprite slideButtonImg;
+
+    public GameObject gameOverUI;
+    public TextMeshProUGUI scoreText;
+    public GameObject[] stars;
+    public int score = 0;
+    public int gauge = 0;
+    public int scoreCount = 0;
+
+    public Sprite BigEmptyStar;
+    public Sprite SmallEmptyStar;
 
     private void Awake()
     {
@@ -79,6 +90,7 @@ public class PlayerController : MonoBehaviour
         else if (other.gameObject.CompareTag("Coin"))
         {
             Debug.Log("Coin");
+            scoreCount++;
             Destroy(other.gameObject);
         }
         else if (other.gameObject.CompareTag("Enemy") || other.gameObject.CompareTag("Attack"))
@@ -106,5 +118,34 @@ public class PlayerController : MonoBehaviour
 
             Destroy(other.gameObject);
         }
+    }
+    public void GameStart()
+    {
+        gameOverUI.SetActive(false);
+        Time.timeScale = 1f;
+    }
+    public void GamePause()
+    {
+        gameOverUI.SetActive(true);
+        // scoreText.text = GaugeManager.scoreCount + "m";
+
+        Debug.Log("endGame start");
+        if (index > 1)
+        {
+            SpriteRenderer sr = stars[0].GetComponent<SpriteRenderer>();
+            sr.sprite = BigEmptyStar;
+        }
+        if (score < 100)
+        {
+            SpriteRenderer sr = stars[1].GetComponent<SpriteRenderer>();
+            sr.sprite = SmallEmptyStar;
+        }
+        if (scoreCount < 100)
+        {
+            SpriteRenderer sr = stars[2].GetComponent<SpriteRenderer>();
+            sr.sprite = SmallEmptyStar;
+        }
+
+        Time.timeScale = 0f; // 게임 일시정지
     }
 }
