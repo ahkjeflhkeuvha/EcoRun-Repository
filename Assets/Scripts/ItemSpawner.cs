@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ScrewSpawner : MonoBehaviour
 {
-    public enum ObjectType { Rock, Grass, Net, Attack, E, C, O, R, U, N } // 오브젝트 타입을 구분하기 위한 enum
+    public enum ObjectType { Rock, Grass, Net, Attack, Gun, E, C, O, R, U, N } // 오브젝트 타입을 구분하기 위한 enum
 
     [System.Serializable]
     public class ObjectInfo
@@ -17,6 +17,7 @@ public class ScrewSpawner : MonoBehaviour
     public GameObject grassPrefab;
     public GameObject netPrefab;
     public GameObject attackPrefab;
+    public GameObject gunPrefab;
 
     public GameObject EPrefab;
     public GameObject CPrefab;
@@ -75,6 +76,9 @@ public class ScrewSpawner : MonoBehaviour
                 break;
             case ObjectType.Attack:
                 prefabToSpawn = attackPrefab;
+                break;
+            case ObjectType.Gun:
+                prefabToSpawn = gunPrefab;
                 break;
             case ObjectType.E:
                 prefabToSpawn = EPrefab;

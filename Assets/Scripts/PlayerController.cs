@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Net.Security;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,6 +8,7 @@ public class PlayerController : MonoBehaviour
 {
     [SerializeField] private Rigidbody2D rigid;
     [SerializeField] private Button jumpButton;
+    [SerializeField] private Button slideButton;
 
     public float jumpPower = 5f;
     public bool isJumping = false;
@@ -16,6 +18,13 @@ public class PlayerController : MonoBehaviour
 
     private Dictionary<string, Image> ecoRunDict = new Dictionary<string, Image>();
     private Dictionary<string, Sprite> filledSpriteDict = new Dictionary<string, Sprite>();
+
+    public HeartManager heartManager;
+    public int index;
+
+    public Sprite attackButtonImg;
+    public Sprite jumpButtonImg;
+    public Sprite slideButtonImg;
 
     private void Awake()
     {
@@ -27,6 +36,7 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
+        index = 0;
         jumpButton.onClick.AddListener(Jump);
     }
 
@@ -54,6 +64,7 @@ public class PlayerController : MonoBehaviour
         {
             Debug.Log("Jump");
             isJumping = true;
+            slideButton.GetComponent<Image>().sprite = attackButtonImg;
             rigid.AddForce(Vector2.up * jumpPower, ForceMode2D.Impulse);
         }
     }
@@ -63,6 +74,7 @@ public class PlayerController : MonoBehaviour
         if (other.gameObject.CompareTag("Ground"))
         {
             isJumping = false;
+            slideButton.GetComponent<Image>().sprite = slideButtonImg;
         }
         else if (other.gameObject.CompareTag("Coin"))
         {
@@ -73,6 +85,7 @@ public class PlayerController : MonoBehaviour
         {
             Debug.Log("Enemy");
             Destroy(other.gameObject);
+            heartManager.DestroyHeart(index++);
         }
         else if (other.gameObject.CompareTag("Bonus"))
         {
