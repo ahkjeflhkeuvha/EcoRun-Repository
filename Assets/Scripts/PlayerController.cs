@@ -1,11 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Net.Security;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -15,6 +13,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Button homeButton;
     [SerializeField] private Button continueButton;
     [SerializeField] private Button retryButton;
+
+    [SerializeField] private Button GameovercancelButton;
+    [SerializeField] private Button GameoverretryButton;
+    [SerializeField] private Button GameoverhomeButton;
 
     public float jumpPower = 5f;
     public bool isJumping = false;
@@ -62,9 +64,12 @@ public class PlayerController : MonoBehaviour
     {
         index = 0;
         jumpButton.onClick.AddListener(Jump);
-        // homeButton.onClick.AddListener(ReturnHome);
+        homeButton.onClick.AddListener(ReturnHome); // 홈 버튼에 리스너 추가
         continueButton.onClick.AddListener(ContinueGame);
         retryButton.onClick.AddListener(RetryGame);
+        // GameovercancelButton.onClick.AddListener(ReturnStage);
+        GameoverhomeButton.onClick.AddListener(ReturnHome);
+        GameoverretryButton.onClick.AddListener(RetryGame);
 
         if (pauseButton != null)
         {
@@ -75,13 +80,11 @@ public class PlayerController : MonoBehaviour
         {
             pausePanel.SetActive(false); // 초기에는 패널을 숨김
         }
-        
+
         if (gameoverPanel != null)
         {
             gameoverPanel.SetActive(false);
         }
-
-
     }
 
     private void Update()
@@ -135,8 +138,9 @@ public class PlayerController : MonoBehaviour
         {
             Debug.Log("Enemy");
             Destroy(other.gameObject);
-            if (index == 3)
+            if (index == 3) // index가 3이 되면 마지막 하트 지우고 게임 오버
             {
+                heartManager.DestroyHeart(index);
                 GameOver();
             }
             else
@@ -164,14 +168,17 @@ public class PlayerController : MonoBehaviour
             Destroy(other.gameObject);
         }
     }
+
     public void GameStart()
     {
         gameOverUI.SetActive(false);
         Time.timeScale = 1f;
     }
+
     public void GameOver()
     {
         gameOverUI.SetActive(true);
+        Time.timeScale = 0f; // 게임 일시정지
         // scoreText.text = GaugeManager.scoreCount + "m";
 
         Debug.Log("endGame start");
@@ -191,7 +198,7 @@ public class PlayerController : MonoBehaviour
             sr.sprite = SmallEmptyStar;
         }
 
-        Time.timeScale = 0f; // 게임 일시정지
+
     }
 
     public void TogglePause()
@@ -244,11 +251,17 @@ public class PlayerController : MonoBehaviour
     {
         Time.timeScale = 1f;
         pausePanel.SetActive(false);
-        pauseButton.GetComponent<Image>().sprite = playSprite;
+        pauseButton.GetComponent<Image>().sprite = stopSprite;
     }
 
     private void RetryGame()
     {
-        SceneManager.LoadScene(0);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex); // 현재 씬 재로드
+        Time.timeScale = 1f;
+    }
+
+    private void ReturnHome()
+    {
+        SceneManager.LoadScene("MainScene"); // MainScene으로 이동
     }
 }

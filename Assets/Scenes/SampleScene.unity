@@ -634,7 +634,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 296705318}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -2298,9 +2298,12 @@ MonoBehaviour:
   rigid: {fileID: 1065967460}
   jumpButton: {fileID: 546715342}
   slideButton: {fileID: 17813675}
-  homeButton: {fileID: 0}
-  continueButton: {fileID: 0}
-  retryButton: {fileID: 0}
+  homeButton: {fileID: 620581834}
+  continueButton: {fileID: 561174660}
+  retryButton: {fileID: 1248137923}
+  GameovercancelButton: {fileID: 1789792690}
+  GameoverretryButton: {fileID: 536262066}
+  GameoverhomeButton: {fileID: 135202360}
   jumpPower: 8
   isJumping: 0
   ecoRunImages:
