@@ -14,10 +14,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Button continueButton;
     [SerializeField] private Button retryButton;
 
-    [SerializeField] private Button GameovercancelButton;
-    [SerializeField] private Button GameoverretryButton;
-    [SerializeField] private Button GameoverhomeButton;
-
     public float jumpPower = 5f;
     public bool isJumping = false;
 
@@ -50,6 +46,8 @@ public class PlayerController : MonoBehaviour
     public GameObject pausePanel;
     public GameObject gameoverPanel;
 
+    public Slider scoreSlider;  // 슬라이더 추가
+
     private bool isPaused = false;
 
     private void Awake()
@@ -67,9 +65,6 @@ public class PlayerController : MonoBehaviour
         homeButton.onClick.AddListener(ReturnHome); // 홈 버튼에 리스너 추가
         continueButton.onClick.AddListener(ContinueGame);
         retryButton.onClick.AddListener(RetryGame);
-        // GameovercancelButton.onClick.AddListener(ReturnStage);
-        GameoverhomeButton.onClick.AddListener(ReturnHome);
-        GameoverretryButton.onClick.AddListener(RetryGame);
 
         if (pauseButton != null)
         {
@@ -85,11 +80,31 @@ public class PlayerController : MonoBehaviour
         {
             gameoverPanel.SetActive(false);
         }
+
+        // 슬라이더 초기화
+        if (scoreSlider != null)
+        {
+            scoreSlider.minValue = 0;
+            scoreSlider.maxValue = 100;
+            scoreSlider.value = 0;
+        }
     }
 
     private void Update()
     {
         scoreText.text = string.Format("{0:D} M", scoreCount);
+
+        // 슬라이더 값 갱신
+        if (scoreSlider != null)
+        {
+            scoreSlider.value = scoreCount;
+        }
+
+        // scoreCount가 100에 도달하면 게임 종료
+        if (scoreCount >= 100)
+        {
+            GameOver();
+        }
     }
 
     private void InitializeDictionaries()
@@ -138,7 +153,7 @@ public class PlayerController : MonoBehaviour
         {
             Debug.Log("Enemy");
             Destroy(other.gameObject);
-            if (index == 3) // index가 3이 되면 마지막 하트 지우고 게임 오버
+            if (index == 2) // index가 3이 되면 마지막 하트 지우고 게임 오버
             {
                 heartManager.DestroyHeart(index);
                 GameOver();
@@ -178,7 +193,6 @@ public class PlayerController : MonoBehaviour
     public void GameOver()
     {
         gameOverUI.SetActive(true);
-        Time.timeScale = 0f; // 게임 일시정지
         // scoreText.text = GaugeManager.scoreCount + "m";
 
         Debug.Log("endGame start");
@@ -198,7 +212,7 @@ public class PlayerController : MonoBehaviour
             sr.sprite = SmallEmptyStar;
         }
 
-
+        Time.timeScale = 0f; // 게임 일시정지
     }
 
     public void TogglePause()
@@ -257,7 +271,6 @@ public class PlayerController : MonoBehaviour
     private void RetryGame()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex); // 현재 씬 재로드
-        Time.timeScale = 1f;
     }
 
     private void ReturnHome()
