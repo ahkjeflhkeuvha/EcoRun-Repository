@@ -3,13 +3,18 @@ using System.Collections.Generic;
 using System.Net.Security;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private Rigidbody2D rigid;
     [SerializeField] private Button jumpButton;
     [SerializeField] private Button slideButton;
+    [SerializeField] private Button homeButton;
+    [SerializeField] private Button continueButton;
+    [SerializeField] private Button retryButton;
 
     public float jumpPower = 5f;
     public bool isJumping = false;
@@ -41,6 +46,7 @@ public class PlayerController : MonoBehaviour
     public Sprite stopSprite;
     public Sprite playSprite;
     public GameObject pausePanel;
+    public GameObject gameoverPanel;
 
     private bool isPaused = false;
 
@@ -56,24 +62,26 @@ public class PlayerController : MonoBehaviour
     {
         index = 0;
         jumpButton.onClick.AddListener(Jump);
+        // homeButton.onClick.AddListener(ReturnHome);
+        continueButton.onClick.AddListener(ContinueGame);
+        retryButton.onClick.AddListener(RetryGame);
 
         if (pauseButton != null)
         {
             pauseButton.onClick.AddListener(TogglePause);
-        }
-        else
-        {
-            Debug.LogError("Pause button is not assigned!");
         }
 
         if (pausePanel != null)
         {
             pausePanel.SetActive(false); // 초기에는 패널을 숨김
         }
-        else
+        
+        if (gameoverPanel != null)
         {
-            Debug.LogError("Pause panel is not assigned!");
+            gameoverPanel.SetActive(false);
         }
+
+
     }
 
     private void Update()
@@ -127,7 +135,14 @@ public class PlayerController : MonoBehaviour
         {
             Debug.Log("Enemy");
             Destroy(other.gameObject);
-            heartManager.DestroyHeart(index++);
+            if (index == 3)
+            {
+                GameOver();
+            }
+            else
+            {
+                heartManager.DestroyHeart(index++);
+            }
         }
         else if (other.gameObject.CompareTag("Bonus"))
         {
@@ -154,7 +169,7 @@ public class PlayerController : MonoBehaviour
         gameOverUI.SetActive(false);
         Time.timeScale = 1f;
     }
-    public void GamePause()
+    public void GameOver()
     {
         gameOverUI.SetActive(true);
         // scoreText.text = GaugeManager.scoreCount + "m";
@@ -223,5 +238,17 @@ public class PlayerController : MonoBehaviour
 
         Time.timeScale = 1f; // 게임 재개
         Debug.Log("Game Resumed");
+    }
+
+    private void ContinueGame()
+    {
+        Time.timeScale = 1f;
+        pausePanel.SetActive(false);
+        pauseButton.GetComponent<Image>().sprite = playSprite;
+    }
+
+    private void RetryGame()
+    {
+        SceneManager.LoadScene(0);
     }
 }
